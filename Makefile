@@ -5,5 +5,5 @@ endif
 install:
 	install -d $(DESTDIR)$(PREFIX)/lib/systemd/user-environment-generators
 	install -d $(DESTDIR)$(PREFIX)/lib/environment.d
-	install -m 0755 inputmethod.py3 $(DESTDIR)$(PREFIX)/lib/systemd/user-environment-generators
+	install -m 0755 inputmethod.py3 $(DESTDIR)$(PREFIX)/lib/systemd/user-environment-generators/29-inputmethod.py3
 	install -m 0644 99-inputmethod.conf $(DESTDIR)$(PREFIX)/lib/environment.d
