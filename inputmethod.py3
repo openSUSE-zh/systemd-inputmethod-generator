@@ -7,22 +7,26 @@ from re import search
 def input_method_exist(im):
   if not im:
     return False
-  system_paths = ["/etc/X11/xim.d", "/usr/etc/X11/xim.d"]
-  for path in system_paths:
+  for path in ["/etc/X11/xim.d", "/usr/etc/X11/xim.d"]:
     path = join(path, im)
     if isfile(path):
       return True
   return False
 
 def get_current_input_method():
-  system_paths = ["/etc/X11/xim.d", "/usr/etc/X11/xim.d"]
   pattern = '^export\s+(INPUT_METHOD|XMODIFIERS)=("@im=)?([A-Za-z0-9]+)(")?$'
   pattern_sysconfig = '^INPUT_METHOD="([A-Za-z0-9]+)"$'
   input_method = ""
 
   # find input_method in $HOME/.xim or $HOME/.i18n
+  home = environ.get("HOME")
+  # the first user session started via systemd is always the display manager's greeter
+  # whose $HOME is, eg: /var/lib/sddm
+  if not home.startswith("/home"):
+    return
+
   for conf in [".xim", ".i18n", ".profile", ".login"]:
-    conf = join(environ.get("HOME"), conf)
+    conf = join(home, conf)
     if isfile(conf):
       file = open(conf, "r")
 
@@ -39,7 +43,7 @@ def get_current_input_method():
   # use user-specified INPUT_METHOD
   if input_method_exist(input_method):
     print("INPUT_METHOD={}".format(input_method.lower()))
-    exit
+    return
 
   # try to use INPUT_METHOD in /etc/sysconfig/language
   if isfile("/etc/sysconfig/language"):
@@ -53,10 +57,26 @@ def get_current_input_method():
 
   if input_method_exist(input_method):
     print("INPUT_METHOD={}".format(input_method.lower()))
-    exit
+    return
 
   # use language default
-  lang = environ.get("LANG").split(".")[0] # "zh_CN"
+  lang = environ.get("LANG")
+
+  if not lang:
+    # read /etc/locale.conf to determine lang
+    file = open("/etc/locale.conf", "r")
+    for line in file:
+      find = search("^LC_CTYPE=([A-Za-z0-9_\-\.]+)$", line)
+      if find:
+        lang = find.group(1)
+        break
+    file.close()
+
+  if lang:
+    lang = lang.split(".")[0] # "zh_CN"
+  else:
+    lang = "en_US"
+
   inputmethods = []
   for path in ["/etc/X11/xim.d", "/usr/etc/X11/xim.d"]:
     path = join(path, lang)
@@ -64,7 +84,8 @@ def get_current_input_method():
       inputmethods = [f for f in listdir(path) if isfile(join(path, f))]
   if not inputmethods:
     # leave INPUT_METHOD unset
-    exit
+    return
+
   i = 0
   j = 0
   for im in inputmethods:
