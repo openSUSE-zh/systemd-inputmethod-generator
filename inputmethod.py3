@@ -60,17 +60,7 @@ def get_current_input_method():
     return
 
   # use language default
-  lang = environ.get("LANG")
-
-  if not lang:
-    # read /etc/locale.conf to determine lang
-    file = open("/etc/locale.conf", "r")
-    for line in file:
-      find = search("^LC_CTYPE=([A-Za-z0-9_\-\.]+)$", line)
-      if find:
-        lang = find.group(1)
-        break
-    file.close()
+  lang = environ.get("LC_CTYPE")
 
   if lang:
     lang = lang.split(".")[0] # "zh_CN"
