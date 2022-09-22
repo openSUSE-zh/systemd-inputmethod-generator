@@ -63,9 +63,12 @@ def get_current_input_method():
   lang = environ.get("LC_CTYPE")
 
   if lang:
-    lang = lang.split(".")[0] # "zh_CN"
+    if lang.startswith("zh_"):
+      lang = lang[0:5]
+    else:
+      lang = lang[0:lang.find('_')]
   else:
-    lang = "en_US"
+    lang = "en"
 
   inputmethods = []
   for path in ["/etc/X11/xim.d", "/usr/etc/X11/xim.d"]:
