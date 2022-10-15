@@ -8,8 +8,9 @@ def input_method_exist(im):
   if not im:
     return False
   for path in ["/etc/X11/xim.d", "/usr/etc/X11/xim.d"]:
-    path = join(path, im)
-    if isfile(path):
+    if isfile(join(path, im)):
+      return True
+    elif im == "fcitx" && isfile(join(path, "fcitx5")):
       return True
   return False
 
@@ -42,6 +43,8 @@ def get_current_input_method():
 
   # use user-specified INPUT_METHOD
   if input_method_exist(input_method):
+    if input_method == "fcitx5":
+      input_method = "fcitx"
     print("INPUT_METHOD={}".format(input_method.lower()))
     return
 
@@ -56,6 +59,8 @@ def get_current_input_method():
     file.close()
 
   if input_method_exist(input_method):
+    if input_method == "fcitx5":
+      input_method = "fcitx"
     print("INPUT_METHOD={}".format(input_method.lower()))
     return
 
@@ -93,6 +98,8 @@ def get_current_input_method():
       input_method = arr[1]
       j += 1
   if input_method:
+    if input_method == "fcitx5":
+      input_method = "fcitx"
     print("INPUT_METHOD={}".format(input_method.lower()))
 
 get_current_input_method()
