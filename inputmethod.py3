@@ -10,7 +10,7 @@ def input_method_exist(im):
   for path in ["/etc/X11/xim.d", "/usr/etc/X11/xim.d"]:
     if isfile(join(path, im)):
       return True
-    elif im == "fcitx" && isfile(join(path, "fcitx5")):
+    elif im == "fcitx" and isfile(join(path, "fcitx5")):
       return True
   return False
 
