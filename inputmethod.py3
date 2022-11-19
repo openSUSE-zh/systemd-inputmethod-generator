@@ -10,7 +10,7 @@ def input_method_exist(im):
   for path in ["/etc/X11/xim.d", "/usr/etc/X11/xim.d"]:
     if isfile(join(path, im)):
       return True
-    elif im == "fcitx" && isfile(join(path, "fcitx5")):
+    elif im == "fcitx" and isfile(join(path, "fcitx5")):
       return True
   return False
 
@@ -89,12 +89,12 @@ def get_current_input_method():
   for im in inputmethods:
     arr = im.split("-")
     if j == 0:
-      i = arr[0]
+      i = int(arr[0])
       input_method = arr[1]
       j += 1
       continue
     if int(arr[0]) < i:
-      i = arr[0]
+      i = int(arr[0])
       input_method = arr[1]
       j += 1
   if input_method:
