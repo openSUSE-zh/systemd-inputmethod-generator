@@ -15,7 +15,7 @@ def input_method_exist(im):
   return False
 
 def get_current_input_method():
-  pattern = '^export\s+(INPUT_METHOD|XMODIFIERS)=("@im=)?([A-Za-z0-9]+)(")?$'
+  pattern = r'^export\s+(INPUT_METHOD|XMODIFIERS)=("@im=)?([A-Za-z0-9]+)(")?$'
   pattern_sysconfig = '^INPUT_METHOD="([A-Za-z0-9]+)"$'
   input_method = ""
 
